@@ -1,0 +1,137 @@
+
+#include <stdio.h>
+#include <string.h>
+
+#define TAM 12
+
+typedef struct {
+    char nome[100];
+    float preco;
+} Produto;
+
+int main() {
+    int numeros[TAM];
+    int contagem[TAM] = {0};
+    int pares[TAM];
+    int qtdPares = 0;
+    int i, j, quantidadeProdutos = 0;
+
+    Produto produtos[100];
+    Produto aux;
+    printf("Digite 12 numeros inteiros:\n");
+
+    for (i = 0; i < TAM; i++) {
+        printf("Numero %d: ", i + 1);
+        scanf("%d", &numeros[i]);
+    }
+
+    for (i = 0; i < TAM; i++) {
+        if (contagem[i] == 0) {
+            for (j = 0; j < TAM; j++) {
+                if (numeros[i] == numeros[j]) {
+                    contagem[i]++;
+                }
+            }
+        }
+    }
+
+    for (i = 0; i < TAM; i++) {
+
+        if (contagem[i] > 0) {
+
+            if (contagem[i] % 2 == 0) {
+                pares[qtdPares] = numeros[i];
+                qtdPares++;
+            } else {
+                int jaCadastrado = 0;
+
+                for (j = 0; j < i; j++) {
+                    if (numeros[i] == numeros[j]) {
+                        jaCadastrado = 1;
+                        break;
+                    }
+                }
+
+                if (!jaCadastrado) {
+                    printf("\nO numero %d aparece %d vezes.\n",
+                           numeros[i], contagem[i]);
+
+                    for (j = 0; j < numeros[i]; j++) {
+                        printf("\nCadastro do produto %d:\n",
+                               j + 1);
+
+                        printf("Nome: ");
+                        scanf(" %99[^\n]", produtos[quantidadeProdutos].nome);
+
+                        printf("Preco unitario: R$ ");
+                        scanf("%f", &produtos[quantidadeProdutos].preco);
+
+                        quantidadeProdutos++;
+                    }
+                }
+            }
+        }
+    }
+    for (i = 0; i < quantidadeProdutos - 1; i++) {
+        for (j = i + 1; j < quantidadeProdutos; j++) {
+            if (strcmp(produtos[i].nome,
+                       produtos[j].nome) > 0) {
+
+                aux = produtos[i];
+                produtos[i] = produtos[j];
+                produtos[j] = aux;
+            }
+        }
+    }
+    for (i = 0; i < qtdPares - 1; i++) {
+        for (j = i + 1; j < qtdPares; j++) {
+            if (pares[i] < pares[j]) {
+                int temp = pares[i];
+                pares[i] = pares[j];
+                pares[j] = temp;
+            }
+        }
+    }
+    printf("\n\n===== NUMEROS INFORMADOS =====\n");
+
+    for (i = 0; i < TAM; i++) {
+        printf("%d ", numeros[i]);
+    }
+    printf("\n\n===== CONTAGEM DE OCORRENCIAS =====\n");
+
+    for (i = 0; i < TAM; i++) {
+        if (contagem[i] > 0) {
+            int jaExibido = 0;
+
+            for (j = 0; j < i; j++) {
+                if (numeros[i] == numeros[j]) {
+                    jaExibido = 1;
+                    break;
+                }
+            }
+
+            if (!jaExibido) {
+                printf("Numero %d: %d ocorrencia(s)\n",
+                       numeros[i], contagem[i]);
+            }
+        }
+    }
+    printf("\n===== PRODUTOS CADASTRADOS =====\n");
+
+    for (i = 0; i < quantidadeProdutos; i++) {
+        printf("Nome: %s | Preco: R$ %.2f\n",
+               produtos[i].nome,
+               produtos[i].preco);
+    }
+
+    printf("\n===== NUMEROS COM OCORRENCIAS PARES =====\n");
+
+    for (i = 0; i < qtdPares; i++) {
+        printf("%d ", pares[i]);
+    }
+
+    printf("\n");
+
+    return 0;
+}
+
