@@ -1,0 +1,173 @@
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+
+#define PARTICIPANTES 4
+
+typedef struct {
+    char nome[100];
+    int idade;
+    double id;
+    double media;
+} Participante;
+
+double fatorial(int n) {
+    double resultado = 1;
+
+    for (int i = 1; i <= n; i++) {
+        resultado *= i;
+    }
+
+    return resultado;
+}
+
+double calcularID(int idade, int quantidade, int tentativa) {
+    int valor = idade;
+
+    for (int i = 0; i < tentativa; i++) {
+        valor /= 2;
+    }
+
+    if (valor < 0) {
+        valor = 0;
+    }
+
+    return pow(fatorial(valor), quantidade) / 2.0;
+}
+
+int idDuplicado(Participante p[], int atual, double id) {
+    for (int i = 0; i < atual; i++) {
+        if (p[i].id == id) {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+double calcularMedia(double valores[], int quantidade) {
+    double soma = 0;
+    int somaPesos = 0;
+
+    for (int i = 0; i < quantidade; i++) {
+        soma += valores[i] * (i + 1);
+        somaPesos += i + 1;
+    }
+
+    return soma / somaPesos;
+}
+
+int main() {
+    Participante p[PARTICIPANTES];
+    int quantidade;
+    double diagonal;
+    double lado1 = -1, lado2 = -1;
+    int encontrados = 0;
+
+    printf("CADASTRO DOS PARTICIPANTES\n");
+
+    for (int i = 0; i < PARTICIPANTES; i++) {
+        printf("\nNome do participante %d: ", i + 1);
+        scanf(" %99[^\n]", p[i].nome);
+
+        printf("Idade: ");
+        scanf("%d", &p[i].idade);
+
+        if (p[i].idade < 0) {
+            printf("Idade invalida. Digite novamente: ");
+            scanf("%d", &p[i].idade);
+        }
+    }
+
+    printf("\nQuantidade de valores para cada participante: ");
+    scanf("%d", &quantidade);
+
+    while (quantidade <= 0) {
+        printf("Digite uma quantidade maior que zero: ");
+        scanf("%d", &quantidade);
+    }
+
+    double valores[PARTICIPANTES][quantidade];
+
+    for (int i = 0; i < PARTICIPANTES; i++) {
+        int tentativa = 0;
+
+        p[i].id = calcularID(p[i].idade, quantidade, tentativa);
+
+        while (idDuplicado(p, i, p[i].id)) {
+            tentativa++;
+            p[i].id = calcularID(p[i].idade, quantidade, tentativa);
+        }
+
+        printf("\nID de %s: %.2lf\n", p[i].nome, p[i].id);
+
+        printf("\nDigite os valores de %s:\n", p[i].nome);
+
+        for (int j = 0; j < quantidade; j++) {
+            printf("Valor %d: ", j + 1);
+            scanf("%lf", &valores[i][j]);
+
+            if (valores[i][j] >= 0 && encontrados < 2) {
+                if (encontrados == 0) {
+                    lado1 = valores[i][j];
+                } else {
+                    lado2 = valores[i][j];
+                }
+
+                encontrados++;
+            }
+        }
+
+        p[i].media = calcularMedia(valores[i], quantidade);
+    }
+
+    for (int i = 0; i < PARTICIPANTES - 1; i++) {
+        for (int j = i + 1; j < PARTICIPANTES; j++) {
+            if (strcmp(p[i].nome, p[j].nome) > 0) {
+                Participante temp = p[i];
+                p[i] = p[j];
+                p[j] = temp;
+
+                for (int k = 0; k < quantidade; k++) {
+                    double aux = valores[i][k];
+                    valores[i][k] = valores[j][k];
+                    valores[j][k] = aux;
+                }
+            }
+        }
+    }
+
+    printf("\nORDEM ALFABETICA\n");
+
+    for (int i = 0; i < PARTICIPANTES; i++) {
+        printf("\nNome: %s", p[i].nome);
+        printf("\nID: %.2lf", p[i].id);
+        printf("\nMedia ponderada: %.2lf\n", p[i].media);
+    }
+
+    if (encontrados == 2) {
+        diagonal = sqrt(pow(lado1, 2) + pow(lado2, 2));
+
+        printf("\nDiagonal do retangulo: %.2lf\n", diagonal);
+
+        printf("\nCLASSIFICACAO DOS PARTICIPANTES\n");
+
+        for (int i = 0; i < PARTICIPANTES; i++) {
+            printf("\n%s: ", p[i].nome);
+
+            if (fabs(p[i].media - diagonal) < 0.000001) {
+                printf("Sobre a diagonal");
+            } else if (p[i].media > diagonal) {
+                printf("Acima da diagonal");
+            } else {
+                printf("Abaixo da diagonal");
+            }
+
+            printf("\n");
+        }
+    } else {
+        printf("\nNao foi possivel calcular a diagonal.\n");
+    }
+
+    return 0;
+}
