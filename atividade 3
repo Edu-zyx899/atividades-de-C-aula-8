@@ -1,0 +1,77 @@
+
+#include <stdio.h>
+#include <string.h>
+
+int main() {
+    int vet[15], cont[15] = {0};
+    int i, j, k, primo, soma, pos;
+    char animais[100][50];
+    int totalAnimais = 0;
+    int verificado[15] = {0};
+
+    for (i = 0; i < 15; i++) {
+        printf("Digite o %d numero: ", i + 1);
+        scanf("%d", &vet[i]);
+    }
+
+    for (i = 0; i < 15; i++) {
+        if (verificado[i] == 0) {
+            cont[i] = 0;
+
+            for (j = 0; j < 15; j++) {
+                if (vet[i] == vet[j]) {
+                    cont[i]++;
+                    verificado[j] = 1;
+                }
+            }
+
+            if (cont[i] > 1) {
+                printf("\nNumero %d aparece %d vezes.\n", vet[i], cont[i]);
+
+                if (cont[i] % 2 != 0) {
+                    primo = 1;
+
+                    if (vet[i] < 2) {
+                        primo = 0;
+                    }
+
+                    for (k = 2; k < vet[i]; k++) {
+                        if (vet[i] % k == 0) {
+                            primo = 0;
+                            break;
+                        }
+                    }
+
+                    if (primo == 1) {
+                        soma = vet[i] * cont[i];
+
+                        printf("Numero primo com quantidade impar.\n");
+                        printf("Soma das ocorrencias: %d\n", soma);
+
+                        for (j = 0; j < soma; j++) {
+                            printf("Digite o nome do animal %d: ", j + 1);
+                            scanf("%49s", animais[totalAnimais]);
+                            totalAnimais++;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    printf("\n--- Animais correspondentes ---\n");
+
+    for (i = 0; i < 15; i++) {
+        if (cont[i] > 1 && verificado[i] == 1) {
+            if (cont[i] % 2 == 0) {
+                pos = i % totalAnimais;
+
+                if (totalAnimais > 0) {
+                    printf("Numero %d: %s\n", vet[i], animais[pos]);
+                }
+            }
+        }
+    }
+
+    return 0;
+}
