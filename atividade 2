@@ -1,0 +1,57 @@
+
+#include <stdio.h>
+
+int main() {
+    int valores[10];
+    int positivosPares[10], negativosImpares[10];
+    int i, j, aux;
+    int contP = 0, contN = 0;
+
+    for (i = 0; i < 10; i++) {
+        printf("Digite o %d valor inteiro: ", i + 1);
+        scanf("%d", &valores[i]);
+
+        if (valores[i] > 0 && valores[i] % 2 == 0) {
+            positivosPares[contP] = valores[i];
+            contP++;
+        }
+        else if (valores[i] < 0 && valores[i] % 2 != 0) {
+            negativosImpares[contN] = valores[i];
+            contN++;
+        }
+    }
+
+    for (i = 0; i < contP - 1; i++) {
+        for (j = i + 1; j < contP; j++) {
+            if (positivosPares[i] > positivosPares[j]) {
+                aux = positivosPares[i];
+                positivosPares[i] = positivosPares[j];
+                positivosPares[j] = aux;
+            }
+        }
+    }
+
+    for (i = 0; i < contN - 1; i++) {
+        for (j = i + 1; j < contN; j++) {
+            if (negativosImpares[i] > negativosImpares[j]) {
+                aux = negativosImpares[i];
+                negativosImpares[i] = negativosImpares[j];
+                negativosImpares[j] = aux;
+            }
+        }
+    }
+
+    printf("\nValores positivos e pares em ordem crescente:\n");
+    for (i = 0; i < contP; i++) {
+        printf("%d ", positivosPares[i]);
+    }
+
+    printf("\n\nValores negativos e impares em ordem crescente:\n");
+    for (i = 0; i < contN; i++) {
+        printf("%d ", negativosImpares[i]);
+    }
+
+    printf("\n");
+
+    return 0;
+}
